@@ -10,7 +10,23 @@ body {
     color: #fff;
 }
 
-.default {
+body.sunny {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+body.cloudy {
+    background: linear-gradient(135deg, #757F9A 0%, #D7DDE8 100%);
+}
+
+body.rainy {
+    background: linear-gradient(135deg, #3a7bd5 0%, #00d2ff 100%);
+}
+
+body.snowy {
+    background: linear-gradient(135deg, #E0EAFC 0%, #CFDEF3 100%);
+}
+
+body.default {
     background: linear-gradient(135deg, #134E5E 0%, #71B280 100%);
 }
 
