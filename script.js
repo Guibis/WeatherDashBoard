@@ -145,7 +145,6 @@ function renderWeather(data, cityName) {
             <div class="forecast-grid">
     `;
 
-    // Generate 5-day forecast (skip today, show next 5 days)
     for (let i = 2; i <= 6; i++) {
         const date = new Date(daily.time[i]);
         const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
@@ -182,7 +181,6 @@ async function handleSearch(e) {
     showLoading();
 
     try {
-        // Geocode city name to coordinates
         const geoUrl = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1&language=en&format=json`;
         const geoResponse = await fetch(geoUrl);
         const geoData = await geoResponse.json();
@@ -194,7 +192,6 @@ async function handleSearch(e) {
         const { latitude, longitude, name, country } = geoData.results[0];
         const fullCityName = `${name}, ${country}`;
 
-        // Fetch weather data
         const weatherUrl = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,relative_humidity_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min,relative_humidity_2m_mean&timezone=auto`;
         
         const weatherResponse = await fetch(weatherUrl);
@@ -223,13 +220,10 @@ function showLoading() {
 function saveToHistory(cityName) {
     let history = getHistory();
     
-    // Remove if already exists
     history = history.filter(city => city.toLowerCase() !== cityName.toLowerCase());
     
-    // Add to beginning
     history.unshift(cityName);
     
-    // Keep only last MAX_HISTORY searches
     history = history.slice(0, MAX_HISTORY);
     
     localStorage.setItem(HISTORY_KEY, JSON.stringify(history));
@@ -255,6 +249,77 @@ function clearLoading() {
 function updateBackground(weatherCode) {
     const weatherInfo = weatherCodes[weatherCode] || weatherCodes[0];
     document.body.className = weatherInfo.background;
+    updateWeatherAnimation(weatherInfo.background);
+}
+
+function updateWeatherAnimation(backgroundType) {
+    const animationContainer = document.getElementById('weatherAnimation');
+    animationContainer.className = 'weather-animation active';
+    
+    animationContainer.innerHTML = '';
+    
+    switch(backgroundType) {
+        case 'sunny':
+            animationContainer.innerHTML = '<div class="sun-animation"></div>';
+            break;
+            
+        case 'cloudy':
+            let cloudHTML = ''
+            for(let i = 0; i < 10; i++){
+                const cloudId = Math.floor(Math.random() * 3 + 1);
+                const animationDuration = 10 + Math.random() * 0.5;
+                const animationDelay = Math.random() * 6;
+                console.log(cloudId);
+                cloudHTML += `
+                    <div class="cloud cloud-${cloudId}" style=" 
+                        animation-duration: ${animationDuration}s;
+                        animation-delay: ${animationDelay}s;
+                    "></div>
+                `;
+            }
+            animationContainer.innerHTML = cloudHTML;
+            break;
+            
+        case 'rainy':
+            let rainHTML = '';
+            for (let i = 0; i < 50; i++) {
+                const left = Math.random() * 100;
+                const animationDuration = 0.5 + Math.random() * 0.5;
+                const animationDelay = Math.random() * 2;
+                rainHTML += `
+                    <div class="raindrop" style="
+                        left: ${left}%; 
+                        animation-duration: ${animationDuration}s;
+                        animation-delay: ${animationDelay}s;
+                    "></div>
+                `;
+            }
+            animationContainer.innerHTML = rainHTML;
+            break;
+            
+        case 'snowy':
+            let snowHTML = '';
+            for (let i = 0; i < 40; i++) {
+                const left = Math.random() * 100;
+                const size = 5 + Math.random() * 8;
+                const animationDuration = 3 + Math.random() * 4;
+                const animationDelay = Math.random() * 5;
+                snowHTML += `
+                    <div class="snowflake" style="
+                        left: ${left}%; 
+                        width: ${size}px;
+                        height: ${size}px;
+                        animation-duration: ${animationDuration}s;
+                        animation-delay: ${animationDelay}s;
+                    "></div>
+                `;
+            }
+            animationContainer.innerHTML = snowHTML;
+            break;
+            
+        default:
+            animationContainer.className = 'weather-animation';
+    }
 }
 
 function renderHistory() {

@@ -37,15 +37,206 @@ body.default {
     padding: 20px;
 }
 
+.weather-animation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 300px;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+.weather-animation.active {
+    opacity: 1;
+}
+
+.sun-animation {
+    position: absolute;
+    top: 30px;
+    right: 10%;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, #FFD700 0%, #FFA500 100%);
+    border-radius: 50%;
+    animation: sunPulse 3s ease-in-out infinite, sunRotate 20s linear infinite;
+    box-shadow: 0 0 60px rgba(255, 215, 0, 0.8),
+                0 0 100px rgba(255, 165, 0, 0.6);
+}
+
+.sun-animation::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: inherit;
+    border-radius: 50%;
+    opacity: 0.3;
+    animation: sunGlow 2s ease-in-out infinite alternate;
+}
+
+@keyframes sunPulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+}
+
+@keyframes sunRotate {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+@keyframes sunGlow {
+    from { transform: scale(1); opacity: 0.2; }
+    to { transform: scale(1.2); opacity: 0.4; }
+}
+
+.cloud {
+    position: absolute;
+    background: rgb(255, 255, 255);
+    border-radius: 100px;
+    animation: cloudFloat linear infinite;
+}
+
+.cloud::before,
+.cloud::after {
+    content: '';
+    position: absolute;
+    background: rgb(255, 255, 255);
+    border-radius: 100px;
+}
+
+.cloud-1 {
+    width: 100px;
+    height: 40px;
+    top: 50px;
+    left: -120px;
+    animation-duration: 25s;
+}
+
+.cloud-1::before {
+    width: 50px;
+    height: 50px;
+    top: -25px;
+    left: 10px;
+}
+
+.cloud-1::after {
+    width: 60px;
+    height: 35px;
+    top: -15px;
+    right: 10px;
+}
+
+.cloud-2 {
+    width: 120px;
+    height: 50px;
+    top: 120px;
+    left: -150px;
+    animation-duration: 30s;
+    animation-delay: 5s;
+}
+
+.cloud-2::before {
+    width: 60px;
+    height: 60px;
+    top: -30px;
+    left: 15px;
+}
+
+.cloud-2::after {
+    width: 70px;
+    height: 40px;
+    top: -20px;
+    right: 15px;
+}
+
+.cloud-3 {
+    width: 90px;
+    height: 35px;
+    top: 180px;
+    left: -110px;
+    animation-duration: 28s;
+    animation-delay: 10s;
+}
+
+.cloud-3::before {
+    width: 45px;
+    height: 45px;
+    top: -20px;
+    left: 12px;
+}
+
+.cloud-3::after {
+    width: 55px;
+    height: 30px;
+    top: -15px;
+    right: 12px;
+}
+
+@keyframes cloudFloat {
+    from { transform: translateX(0); }
+    to { transform: translateX(calc(100vw + 150px)); }
+}
+
+.raindrop {
+    position: absolute;
+    top: -10px;
+    width: 2px;
+    height: 10px;
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0.8), rgba(174, 214, 241, 0.9));
+    border-radius: 50%;
+    animation: rainFall linear infinite;
+    opacity: 0.6;
+}
+
+@keyframes rainFall {
+    from { 
+        transform: translateY(-20px);
+        opacity: 0.8;
+    }
+    to { 
+        transform: translateY(320px);
+        opacity: 0;
+    }
+}
+
+.snowflake {
+    position: absolute;
+    top: -12px;
+    width: 8px;
+    height: 8px;
+    background: white;
+    border-radius: 50%;
+    animation: snowFall linear infinite;
+    opacity: 0.8;
+    box-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+}
+
+@keyframes snowFall {
+    from { 
+        transform: translateY(-20px) rotate(0deg);
+        opacity: 1;
+    }
+    to { 
+        transform: translateY(320px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
 header {
     text-align: center;
     margin-bottom: 30px;
     padding: 20px;
+    text-shadow: 0px 0px 3px rgb(0, 0, 0);
 }
 
 header h1 {
     font-size: 2.5rem;
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
     margin-bottom: 10px;
 }
 
@@ -116,9 +307,13 @@ button:hover {
 
 .loading {
     text-align: center;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 10px;
     padding: 40px;
+    margin-bottom: 30px;
     font-size: 1.2rem;
     text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    cursor: progress;
 }
 
 .error {
